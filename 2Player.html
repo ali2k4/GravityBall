@@ -1,0 +1,374 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Happy Balls</title>
+
+<!-- By Humayun Ahmed and Paul Spry -->
+
+<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script>var zon = true;</script>
+<script src="https://d309knd7es5f10.cloudfront.net/zim_4.8.1.js"></script>
+
+<!-- physics libraries -->
+<script src="https://d309knd7es5f10.cloudfront.net/Box2dWeb-2.1.a.3.min.js"></script>
+<script src="https://d309knd7es5f10.cloudfront.net/physics_0.1.0.js"></script><!-- helper code for box2D -->
+<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+
+
+<script>
+
+var scaling = "fit"; // this will resize to fit inside the screen dimensions
+var width = window.innerWidth;
+var height = window.innerHeight;
+var color = "#333";
+var frame = new zim.Frame(scaling, width, height, color);
+frame.on("ready", function() {
+	zog("ready from ZIM Frame");
+
+	var stage = frame.stage;
+	var stageW = frame.width;
+	var stageH = frame.height;
+frame.loadAssets(["backgroundmain.png", "redcircle.png", "bluecircle.png", "Click.mp3", "playagain.png", "Payday.mp3"], "assets/");
+
+
+
+frame.loadAssets(["backgroundmain.png"], "assets/");
+frame.on("complete", function(){
+
+	
+	var songlol = frame.asset("Payday.mp3");
+	songlol.play();
+
+
+	var pic = frame. asset("backgroundmain.png");
+	pic.scale = .8;
+	pic.center(stage);
+	stage.update();
+
+
+	var borders = {x:0, y:0, width:stageW, height:stageH};
+
+	var physics = new zim.Physics(frame, borders, 6);
+	// var ballcontainer = new zim.Container();
+	// ballcontainer.width = stageW;
+	// ballcontainer.height = stageH;
+	// ballcontainer.x = 0
+	// ballcontainer.y = 0
+	// var ballcontaineborders = {x:0, y:0, width:stageW, height:stageH};
+
+	// var physics = new zim.Physics(frame, ballcontaineborders, 1);
+	// ballcontainer.addTo(stage);
+
+	var tri1 = 170;
+	var tri2 = 150;
+	var tri3 = 150;
+
+	var triR1 = 100;
+	var triR2 = 100;
+	var triR3 = 100;
+
+
+	var boxW = 1;
+	var boxH = stageH;
+
+	var netRW = 20;
+	var netRH = 150;
+	var netLW = 20;
+	var netLH = 150;
+
+
+	var triBody = physics.makeTriangle(tri1, tri2, tri3, false,1);
+	var triRBody = physics.makeTriangle(triR1, triR2, triR3, false,1);
+	var triLBody = physics.makeTriangle(triR1, triR2, triR3, false,1);
+
+
+	// var boxBody = physics.makeRectangle(boxW, boxH, false);
+
+	// boxBody.x = stageW/2;
+	// boxBody.y = stageH/2-.005;
+	triBody.x = stageW/2;
+	triBody.y = stageH;
+	triRBody.x = 0;
+	triRBody.y = stageH;
+	triLBody.x = stageW;
+	triLBody.y = stageH;
+
+
+	var box = new zim.Rectangle(boxW, boxH, frame.grey);
+	box.centerReg(stage);
+
+	var netR = new zim.Rectangle(netRW, netRH, "#FA5E3F");
+	netR.x = -10;
+	netR.y = stageH/3;
+	stage.addChild(netR);
+
+	var netL = new zim.Rectangle(netLW, netLH, frame.blue);
+	netL.x = stageW-10;
+	netL.y = stageH/3;
+	stage.addChild(netL);
+
+
+	var tri = new zim.Triangle(tri1, tri2, tri3, frame.brown);
+	tri.centerReg(stage);
+
+	var triR = new zim.Triangle(triR1, triR2, triR3, frame.brown);
+	triR.x = triRBody.x;
+	triR.y = triRBody.y;
+	stage.addChild(triR);
+
+	var triL = new zim.Triangle(triR1, triR2, triR3, frame.brown);
+	triL.x = triLBody.x;
+	triL.y = triLBody.y;
+	stage.addChild(triL);
+
+	// physics.addMap(boxBody, box);
+
+
+	physics.addMap(triBody, tri);
+
+
+
+    var circleR = 50;
+    var ballz = 20;
+
+
+	// ball
+	var ballBody = physics.makeCircle({
+		radius:ballz,
+		angular:.5,
+		linear:.1,
+		friction:0,
+		density:1,
+		restitution:.8
+
+	});
+	ballBody.x = zim.rand(20,stageW-20);
+	ballBody.y = 50;
+
+	//player 1
+
+	var player1Body = physics.makeCircle({
+		radius:circleR,
+		angular:.5,
+		linear:.1,
+		friction:4,
+		desity: 0.1,
+		restitution:.1
+
+	});
+
+	//position
+	player1Body.x = 200;
+	player1Body.y = 100;
+
+	// player 2
+	var player2Body = physics.makeCircle({
+		radius:circleR,
+		angular:.1,
+		linear:.5,
+		friction:4,
+		desity: 0.1,
+		restitution:.1
+
+	});
+
+	player2Body.x = 800;
+	player2Body.y = 100;
+
+	// var rightside = new zim.Container;
+	// rightside.x = 0;
+	// rightside.y = 0;
+	// rightside.width = stageW/2;
+	// rightside.height = stageH;
+	// rightside.addTo(stage);
+	// var leftside = new zim.Container;
+	// leftside.x = stageW/2;
+	// leftside.y = 0;
+	// leftside.width = stageW/2;
+	// leftside.height = stageH;
+	// leftside.addTo(stage);
+
+
+	var ball = new zim.Circle(ballz, frame.white);
+	ball.addTo(stage).pos(ballBody.x, ballBody.y);
+
+	var player1 = new zim.Circle(circleR, "#FA5E3F");
+	player1.addTo(stage).pos(player1Body.x, player1Body.y);
+
+
+	var player2 = new zim.Circle(circleR, frame.blue);
+	player2.addTo(stage).pos(player2Body.x, player2Body.y);
+
+	// MAPPING
+	physics.addMap(ballBody, ball);
+	physics.addMap(player1Body, player1);
+	physics.addMap(player2Body, player2);
+
+
+
+	var k = [0,0,0,0];
+	var m = [0,0,0,0];
+	var n = [0,0,0,0];
+	var a = 37;
+	var b = 65;
+	var c = 37
+	var speed = 70;
+	frame.on("keydown", function(e) {checkKeys(e.keyCode, speed);
+	 console.log(e.keyCode);
+	});
+	frame.on("keyup", function(e) {checkKeys(e.keyCode, 0);});
+	function checkKeys(code, speed) {
+		if (code == 37) k[37-a] = -speed;
+		if (code == 39) k[39-a] = speed;
+
+		if (code == 65) m[65-b] = -speed;
+		if (code == 68) m[68-b] = speed;
+
+		if (code == 38) n[38-c] = -speed;
+		if (code == 87) n[39-c] = -speed;
+
+		if (code == 40) n[0] = speed;
+		if (code == 83) n[3] = speed;
+
+		console.log(n);
+
+
+
+	}
+		var score = 0;
+		var scoreL = 0;
+		function CheckHitting(){
+
+		// if (zim.hitTestBounds(ball, player1)) {
+		// 	var clicksound = frame.asset("Click.mp3").play();
+		// 	clicksound.delay = 1;
+		// 	clicksound.volume = .1;
+		// 	console.log("BALLHIT");
+		// }
+		//
+		// if (zim.hitTestBounds(ball, player2)) {
+		// 	var clicksound = frame.asset("Click.mp3").play();
+		// 	clicksound.delay = 1;
+		// 	clicksound.volume = .1;
+		// 	console.log("BALLHIT");
+		// }
+
+		if (zim.hitTestBounds(netR, ball)) {
+			console.log("hit");
+			stage.removeChild(netR);
+			setTimeout(function(){
+				stage.addChild(netR);
+			},600);
+			score++;
+			scoreText.text = score;
+			if (score == 10){
+				zgo("youwin2.html");
+			}
+
+      	}
+      	if (zim.hitTestBounds(netL, ball)) {
+			console.log("hit Left");
+			stage.removeChild(netL);
+			setTimeout(function(){
+				stage.addChild(netL);
+			},600);
+			scoreL++;
+			scoreTextL.text = scoreL;
+			if (scoreL == 10){
+				zgo("youwin.html");
+			}
+
+      	}
+      	// if (zim.hitTestBounds(box, player1)) {
+
+      	// 	zog("player1 hitting the bar");
+      	// 	player1Body.x = stageW/3;
+      	// 	player1Body.y = stageH;
+
+      	// }
+      	// if (zim.hitTestBounds(box, player2)) {
+
+      	// 	zog("player1 hitting the bar");
+      	// 	player2Body.x = stageW-100;
+      	// 	player2Body.y = stageH;
+      	// }
+		stage.update();
+
+	}
+
+
+	physics.Ticker.add(function() {
+		// if (Math.abs(m[0]+m[2]) + Math.abs(m[1]+m[4]) == 0) return;
+			player1Body.ApplyForce(new b2Vec2(m[0]+m[3], n[2]), player1Body.GetWorldCenter());
+		// if (Math.abs(k[0]+k[2]) + Math.abs(k[0]+k[3]) == 0) return;
+			player2Body.ApplyForce(new b2Vec2(k[0]+k[2], n[1]), player2Body.GetWorldCenter());
+			player1Body.ApplyForce(new b2Vec2(m[0]+m[3], n[3]), player1Body.GetWorldCenter());
+		// if (Math.abs(k[0]+k[2]) + Math.abs(k[0]+k[3]) == 0) return;
+			player2Body.ApplyForce(new b2Vec2(k[0]+k[2], n[0]), player2Body.GetWorldCenter());
+
+
+
+		// if (Math.abs(n[0]+n[2]) + Math.abs(n[0]+n[3]) == 0) return;
+		// 	player2Body.ApplyForce(new b2Vec2(10, -100), player2Body.GetWorldCenter());
+
+
+		// if (Math.abs(n[0]+n[2]) + Math.abs(n[3]+n[4]) == 0) return;
+		// if (Math.abs(n[1]) player2Body.ApplyForce(), player2Body.GetWorldCenter());
+
+
+	});
+
+	zim.Ticker.add(function(){
+		CheckHitting();
+	},stage);
+
+
+// Score panels
+
+			var scorePanel = new zim.Container();
+			stage.addChild(scorePanel);
+			scorePanel.setBounds(0,0,75,75);
+
+			// var scoreBacking = new zim.Rectangle(60, 60, "white");
+			// scoreBacking.x = 7;
+			// scoreBacking.y = 8;
+			// scorePanel.addChild(scoreBacking);
+
+			var scoreText = new zim.Label({text:"0", align:"center", color:"black"});
+			scoreText.center(scorePanel);
+
+			scorePanel.x = stageW/1.5;
+			scorePanel.y = 50;
+
+
+			var scorePanelL = new zim.Container();
+			stage.addChild(scorePanelL);
+			scorePanelL.setBounds(0,0,75,75);
+
+			// var scoreBackingL = new zim.Rectangle(60, 60, "white");
+			// scoreBackingL.x = 7;
+			// scoreBackingL.y = 8;
+			// scorePanelL.addChild(scoreBackingL);
+
+			var scoreTextL = new zim.Label({text:"0", align:"center", color:"black"});
+			scoreTextL.center(scorePanelL);
+
+			scorePanelL.x = stageW/4;
+			scorePanelL.y = 50;
+
+			
+	stage.update();
+	
+
+});
+	}); // end of ready
+
+	</script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
+
+	</head>
+	<body>
+	</body>
+	</html>

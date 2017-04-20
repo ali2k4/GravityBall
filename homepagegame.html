@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>2 Player</title>
+
+
+<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script src="https://d309knd7es5f10.cloudfront.net/zim_4.4.0.js"></script>
+
+<style>
+	body {margin:0px; padding:0px; background-color:#ECECEC;}
+	#myCanvas {position:absolute; background-color:white;}
+</style>
+
+<script>
+
+// SCALING OPTIONS
+// scaling can have values as follows with full being the default
+// "fit"		sets canvas and stage to dimensions and scales to fit inside window size
+// "outside"	sets canvas and stage to dimensions and scales to fit outside window size
+// "full"		sets stage to window size with no scaling
+// "tagID"		add canvas to HTML tag of ID - set to dimensions if provided - no scaling
+
+var scaling = "fit"; // fit scales to fit the browser window while keeping the aspect ratio
+var width = 1920; // can go higher...
+var height = 1080;
+var frame = new zim.Frame(scaling, width, height); // see docs for more options and info
+
+frame.on("ready", function() {
+
+	zog("ready from ZIM Frame");
+
+	var stage = frame.stage;
+	var stageW = frame.width;
+	var stageH = frame.height;
+
+
+
+
+frame.loadAssets(["redcircle.png", "bluecircle.png", "Click.mp3", "playagain.png", "Payday.mp3"], "assets/");
+
+frame.on("complete", function() {
+
+var songlol = frame.asset("Payday.mp3");
+songlol.play();
+
+var holder = new zim.Container();
+stage.addChild(holder);
+
+
+
+
+
+var playagain = new zim.Label("START", 50, "Orator Std", "black", "grey",null,null,null,null,null,null, "italic");
+	holder.addChild(playagain);
+	playagain.x = stageW - 1720;
+	playagain.y = stageH - 280;
+	zim.scale(playagain, 1.5);
+
+var gcircle = frame.asset("redcircle.png");
+	holder.addChild(gcircle);
+	gcircle.x = stageW - 600;
+	gcircle.y = stageH - 500;
+	gcircle.scaleX = gcircle.scaleY = .32;
+	zim.move({
+		target:gcircle,
+		y:600,
+		time:1000,
+		loop:true,
+		rewind:true,
+		sequence:100
+	});
+
+	var bcircle = frame.asset("bluecircle.png");
+		holder.addChild(bcircle);
+		bcircle.x = stageW - 1000;
+		bcircle.y = stageH - 500;
+		bcircle.scaleX = bcircle.scaleY = .3;
+		zim.move({
+			target:bcircle,
+			y:600,
+			time:800,
+			loop:true,
+			rewind:true,
+			sequence:100
+		});
+
+	playagain.on("click", function(e) {
+		var click = frame.asset("Click.mp3").play();
+		click.volume = 0.33;
+
+		zim.animate({
+		target:gcircle,
+		obj:{alpha:0},
+		time:700,
+		call: playagain
+
+	});
+		function playagain(){
+			zgo("2Player.html")
+		}
+		//wait: 2000
+
+	});
+	
+
+
+
+ stage.update();
+
+});
+
+
+document.addEventListener("keydown", function(e) {
+	 console.log(e);
+	 window.location = "2Player.html";
+	 // if(e.keycode == 13) {
+	 // 	zgo("2Player.html");
+	 // }
+	});
+
+});
+
+
+
+
+ // end of ready
+</script>
+</head>
+
+<body>
+<!-- canvas with id="myCanvas" is made by zim Frame -->
+</body>
+</html>
