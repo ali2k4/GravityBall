@@ -1,4 +1,5 @@
 # GravityBall
+**By: Paul Spry and Humayun (Ali) Ahmed**
 
 <img src="https://github.com/ali2k4/GravityBall/blob/master/img/main.png?raw=true">
 
